@@ -63,6 +63,8 @@ def canOrderOnThisTime(cleaners, timeStartCleaningObject, timeEndCleaningObject,
 
                     if (orderTimeStart < timeEndCleaningObject and timeStartCleaningObject < orderTimeEnd):
                         isPossibleToBookThisCleaner = False
+                else:
+                    isPossibleToBookThisCleaner = False
 
             if isPossibleToBookThisCleaner:
                 cleanerThatCanClean.append(cleaner["ID"])
