@@ -2,20 +2,21 @@ from datetime import datetime,timedelta
 
 from findTimeCut import findTimeCut
 from timeDeltaIntoHumanize import timeDeltaIntoHumanize
+from TimeStrIntoTimeDelta import timeStrIntoTimeDelta
 
 cleaners = [
     {
         "ID":"1",
         "orders": [
             {
-                "id":2,
-                "timeStart":"13:45",
-                "possibleStartNew":"22:10"
-            },
-             {
                 "id":1,
                 "timeStart": "09:00",
                 "possibleStartNew": "13:00"
+            },
+            {
+                "id":2,
+                "timeStart":"13:45",
+                "possibleStartNew":"22:10"
             },
         ]
     },
@@ -43,10 +44,7 @@ cleaners = [
 
 
 
-def canOrderOnThisTime(cleaners, startCleaningTime, endCleaningTime,approximateCleanTime):
-    timeStartCleaningObject = datetime.strptime(startCleaningTime, "%H:%M").time()
-    timeEndCleaningObject = datetime.strptime(endCleaningTime, "%H:%M").time()
-
+def canOrderOnThisTime(cleaners, timeStartCleaningObject, timeEndCleaningObject,approximateCleanTime):
     if timeEndCleaningObject > timeStartCleaningObject:
         cleanerThatCanClean = []
         globalTimes = []
@@ -57,15 +55,13 @@ def canOrderOnThisTime(cleaners, startCleaningTime, endCleaningTime,approximateC
 
             for order in cleaner["orders"]:
                 if len(cleaner["orders"]) < 3:
-                    orderTimeStart = datetime.strptime(order['timeStart'], "%H:%M").time()
-                    orderTimeEnd = datetime.strptime(order['possibleStartNew'], "%H:%M").time()
+                    orderTimeStart = timeStrIntoTimeDelta(order["timeStart"])
+                    orderTimeEnd = timeStrIntoTimeDelta(order["possibleStartNew"])
 
                     orderTimings = {"orderTimeStart": order['timeStart'], "orderTimeEnd": order['possibleStartNew']}
                     localTimes.append(orderTimings)
 
-                    if (timeStartCleaningObject > orderTimeStart and timeStartCleaningObject < orderTimeEnd or
-                        timeEndCleaningObject > orderTimeStart and timeEndCleaningObject < orderTimeEnd):
-
+                    if (orderTimeStart < timeEndCleaningObject and timeStartCleaningObject < orderTimeEnd):
                         isPossibleToBookThisCleaner = False
 
             if isPossibleToBookThisCleaner:
@@ -83,18 +79,13 @@ def canOrderOnThisTime(cleaners, startCleaningTime, endCleaningTime,approximateC
 
 if __name__ == "__main__":
 
-    timeStart = timedelta(hours=10,minutes=0)
-    approximateTimeWork = timedelta(hours=4)
+    timeStart = timedelta(hours=7,minutes=0)
+    approximateTimeWork = timedelta(hours=6)
     approximateTimeEnd = timeStart+approximateTimeWork
 
-
-    humanizeTimeStart = timeDeltaIntoHumanize(timeStart)
-    humanizeTimeWork = timeDeltaIntoHumanize(approximateTimeWork)
-    humanizeTimeEnd = timeDeltaIntoHumanize(approximateTimeEnd)
-
-    result = canOrderOnThisTime(cleaners, humanizeTimeStart, humanizeTimeEnd,humanizeTimeWork)
+    result = canOrderOnThisTime(cleaners, timeStart, approximateTimeEnd,approximateTimeWork)
 
     print(result)
 
-    # Переписать функцию timeDeltaIntoHumanize 
     # Проверить оставшиеся исключения
+    # Есть небольшая недоработка с границами, нужно брать +1 час к timeEnd
