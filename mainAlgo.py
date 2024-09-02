@@ -81,7 +81,7 @@ def canOrderOnThisTime(cleaners, timeStartCleaningObject, timeEndCleaningObject,
 
 if __name__ == "__main__":
 
-    timeStart = timedelta(hours=7,minutes=0)
+    timeStart = timedelta(hours=14,minutes=0)
     approximateTimeWork = timedelta(hours=6)
     approximateTimeEnd = timeStart+approximateTimeWork
 

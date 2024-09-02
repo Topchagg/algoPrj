@@ -9,7 +9,6 @@ def findTimeCut(timeLines, approximateCleanTime):
     possibleEarlest = timedelta(hours=6, minutes=0)
     possibleLatest = timedelta(hours=22, minutes=0)
 
-    approximateCleanTimeObject = timeStrIntoTimeDelta(approximateCleanTime)
 
     for listOfCuts in timeLines:
         for cut in listOfCuts:
@@ -18,11 +17,11 @@ def findTimeCut(timeLines, approximateCleanTime):
 
             operateOrderTimeEnd = timeStrIntoTimeDelta(cut["orderTimeEnd"])
 
-            possibleEarlestTaskStart = operateOrderTimeStart - approximateCleanTimeObject
-            possibleEarlestTaskEnd = possibleEarlestTaskStart + approximateCleanTimeObject
+            possibleEarlestTaskStart = operateOrderTimeStart - approximateCleanTime
+            possibleEarlestTaskEnd = possibleEarlestTaskStart + approximateCleanTime
 
             possibleLatestTaskStart = operateOrderTimeEnd + timedelta(hours=1)
-            possibleLatestTaskEnd = possibleLatestTaskStart + approximateCleanTimeObject
+            possibleLatestTaskEnd = possibleLatestTaskStart + approximateCleanTime
 
             if possibleEarlest <= possibleEarlestTaskStart < possibleLatest:
                 addCutsToList(listOfCuts, possibleCuts,[possibleEarlestTaskStart, possibleEarlestTaskEnd])
